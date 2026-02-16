@@ -1,7 +1,9 @@
-SELECT TOP 15
+SELECT 
+
     -- BAZA (nonduplicatable)
     docOtchetyPoProd._IDRRef BAZA,
     docOtchetyPoProd._Number DocNUMBER,
+	docOtchetyPoProd._Posted Posted,
 
     -- BASE1_DATE
     DATEADD(YEAR, -2000, docOtchetyPoProd._Date_Time) AS BASE1_DATE,
@@ -64,8 +66,9 @@ SELECT TOP 15
     -- BASE12_EXECUTANTS_COUNT (other reg)
     ISNULL(sotr_count.executantsCount, 0)
 
-
 FROM _Document426 docOtchetyPoProd
+
+---------------------------------------------------------------------------------------
 
 CROSS APPLY (
     SELECT DATEDIFF(MINUTE, docOtchetyPoProd._Fld23192, docOtchetyPoProd._Fld23193) WorkMinutes
@@ -74,6 +77,7 @@ CROSS APPLY (
 LEFT JOIN _AccumRg20664 rnVypuskProd
     ON docOtchetyPoProd._IDRRef = rnVypuskProd._RecorderRRef
 
+---------------------------------------------------------------------------------------
 
 -- BASE2_TYP_ZMINY
 LEFT JOIN _Enum23693 enumVidySmen
@@ -180,5 +184,10 @@ LEFT JOIN (
 ) sotr_count
     ON docOtchetyPoProd._IDRRef = sotr_count._Document426_IDRRef
 
+---------------------------------------------------------------------------------------
+
+WHERE enumVidySmen._EnumOrder IS NOT NULL -- через це мін рік - 2023
+AND sprVidyPodrazdel._Description LIKE N'Цех%' -- бо Цех Лінія.. нема цеху - нема лінії
+AND docOtchetyPoProd._Posted  = 1
 
 ORDER BY docOtchetyPoProd._Date_Time DESC
