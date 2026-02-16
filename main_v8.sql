@@ -1,4 +1,4 @@
-SELECT 
+SELECT TOP 20
 
 DATEADD(YEAR, -2000, rnVypuskProd_base.Perio)	AS Date_BASE1,
 
@@ -75,10 +75,6 @@ LEFT JOIN (
 ) rsColichRezov
     ON rnVypuskProd_base._RecorderRRef = rsColichRezov._RecorderRRef
 
-
--- LEFT JOIN _InfoRg24651 rsRemonty
---    ON rnVypuskProd_base._RecorderRRef = rsRemonty._Fld24657RRef
-
 LEFT JOIN (
     SELECT 
         _Fld24657RRef,
@@ -110,36 +106,36 @@ LEFT JOIN _Enum23693 enumVidySmen
 
 LEFT JOIN (
     SELECT
-        zatratyNaVyplatu._RecorderRRef,
-        SUM(zatratyNaVyplatu._Fld21062) allSum,
+        rnZatratyNaVyplatu._RecorderRRef,
+        SUM(rnZatratyNaVyplatu._Fld21062) allSum,
 
         SUM(CASE 
                 WHEN stattiZatrat._Description LIKE N'Технологічні%' 
-                THEN zatratyNaVyplatu._Fld21062 
+                THEN rnZatratyNaVyplatu._Fld21062 
                 ELSE 0 
             END) defectSum,
 
 	CAST(
     ROUND(
         CASE 
-            WHEN SUM(zatratyNaVyplatu._Fld21062) = 0 THEN 0
+            WHEN SUM(rnZatratyNaVyplatu._Fld21062) = 0 THEN 0
             ELSE 
                 SUM(CASE 
                         WHEN stattiZatrat._Description LIKE N'Технологічні%' 
-                        THEN zatratyNaVyplatu._Fld21062 
+                        THEN rnZatratyNaVyplatu._Fld21062 
                         ELSE 0 
                     END) * 100.0
-                / SUM(zatratyNaVyplatu._Fld21062)
+                / SUM(rnZatratyNaVyplatu._Fld21062)
         END
     , 2)
 AS DECIMAL(10,2)) defectProzent
 
-    FROM _AccumRg21045 zatratyNaVyplatu
+    FROM _AccumRg21045 rnZatratyNaVyplatu
 
     LEFT JOIN _Reference216 stattiZatrat
-        ON zatratyNaVyplatu._Fld21054RRef = stattiZatrat._IDRRef
+        ON rnZatratyNaVyplatu._Fld21054RRef = stattiZatrat._IDRRef
 
-    GROUP BY zatratyNaVyplatu._RecorderRRef
+    GROUP BY rnZatratyNaVyplatu._RecorderRRef
 ) zat
     ON rnVypuskProd_base._RecorderRRef = zat._RecorderRRef
 
