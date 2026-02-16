@@ -1,4 +1,4 @@
-SELECT TOP 20
+SELECT TOP 15
     -- BAZA (nonduplicatable)
     docOtchetyPoProd._IDRRef BAZA,
     docOtchetyPoProd._Number DocNUMBER,
@@ -7,7 +7,7 @@ SELECT TOP 20
     DATEADD(YEAR, -2000, docOtchetyPoProd._Date_Time) AS BASE1_DATE,
 
     -- BASE2_TYP_ZMINY
-    docOtchetyPoProd._Fld23714RRef VydyZmin,
+    -- docOtchetyPoProd._Fld23714RRef VydyZmin,
     CASE enumVidySmen._EnumOrder 
     WHEN 1 THEN 'Night'
     WHEN 0 THEN 'Day'
@@ -25,6 +25,10 @@ SELECT TOP 20
     rsVremiaIzhotovlenia._Fld24502 AS BASE5_PLAN_PER_MINUTE,
 
     -- BASE6_FACT_PER_MINUTE
+	rnVypuskProd._Fld20674 factCount,
+	wm.WorkMinutes,
+	docOtchetyPoProd._Fld23192 workStart, 
+	docOtchetyPoProd._Fld23193 workEnd,
     CAST( ROUND(
         rnVypuskProd._Fld20674 * 1.0 
         / NULLIF(wm.WorkMinutes, 0),     0)     AS INT)	 AS BASE6_FACT_PER_MINUTE,
@@ -33,6 +37,8 @@ SELECT TOP 20
     rsColichRezov.RezCount AS BASE7_COUNT_RIZIV,
 
     -- BASE8_BRAK_SYROVINY_VIDSOTOK
+	zat.defectSum, 
+	zat.allSum,
     zat.defectProzent AS BASE8_BRAK_SYROVINY_VIDSOTOK,
 
     -- BASE9_WORKING_TIME
