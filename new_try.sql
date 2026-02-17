@@ -1,4 +1,4 @@
-SELECT 
+SELECT
 
     -- BAZA (nonduplicatable)
     docOtchetyPoProd._IDRRef BAZA,
@@ -47,14 +47,32 @@ SELECT
     docOtchetyPoProd._Fld23192 AS NachaloSmeny,
     docOtchetyPoProd._Fld23193 AS KonecSmeny,
     wm.WorkMinutes AS WorkingMinutes,
-    CAST(DATEADD(MINUTE, ISNULL(wm.WorkMinutes, 0), 0)
+    CAST( DATEADD(
+        MINUTE,
+        CASE 
+            WHEN ISNULL(wm.WorkMinutes, 0) > 100000 
+                 OR ISNULL(wm.WorkMinutes, 0) < 0
+            THEN 0
+            ELSE ISNULL(wm.WorkMinutes, 0)
+        END,
+        0 )
     AS time) AS WorkingTime,
     CAST(wm.WorkMinutes / 60 AS VARCHAR(10)) + 'h ' 
     + RIGHT(CAST(wm.WorkMinutes % 60 AS VARCHAR(2)), 2) + 'min' AS BASE9_WORKING_TIME,
 
     -- BASE10_REMONT_TIME (other reg)
     rsRemonty.RepairMinutes AS RemontMinutes,
-    CAST(DATEADD(MINUTE, ISNULL(rsRemonty.RepairMinutes, 0), 0)
+    CAST(
+    DATEADD(
+        MINUTE,
+        CASE 
+            WHEN ISNULL(rsRemonty.RepairMinutes, 0) > 100000 
+                 OR ISNULL(rsRemonty.RepairMinutes, 0) < 0
+            THEN 0
+            ELSE ISNULL(rsRemonty.RepairMinutes, 0)
+        END,
+        0
+    )
     AS time) AS RemontTime,
     CAST(ISNULL(rsRemonty.RepairMinutes, 0) / 60 AS VARCHAR(10)) + 'h ' 
     + RIGHT(
@@ -63,7 +81,17 @@ SELECT
 
     -- BASE11_PROSTOI_TIME (other reg)
     rsProstoi.DowntimeMinutes AS ProstoiMinutes, 
-    CAST(DATEADD(MINUTE, ISNULL(rsProstoi.DowntimeMinutes, 0), 0)
+    CAST(
+    DATEADD(
+        MINUTE,
+        CASE 
+            WHEN ISNULL(rsProstoi.DowntimeMinutes, 0) > 100000 
+                 OR ISNULL(rsProstoi.DowntimeMinutes, 0) < 0
+            THEN 0
+            ELSE ISNULL(rsProstoi.DowntimeMinutes, 0)
+        END,
+        0
+    )
     AS time) AS ProstoiTime,
     CAST(ISNULL(rsProstoi.DowntimeMinutes, 0) / 60.0 AS VARCHAR(10)) + 'h ' 
     + RIGHT(
