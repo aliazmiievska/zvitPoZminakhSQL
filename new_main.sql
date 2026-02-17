@@ -31,9 +31,27 @@ SELECT
 	wm.WorkMinutes,
 	docOtchetyPoProd._Fld23192 workStart, 
 	docOtchetyPoProd._Fld23193 workEnd,
-    CAST( ROUND(
-        rnVypuskProd._Fld20674 * 1.0 
-        / NULLIF(wm.WorkMinutes, 0),     0)     AS INT)	 AS BASE6_FACT_PER_MINUTE,
+    CAST( 
+        ROUND(
+            rnVypuskProd._Fld20674 * 1.0 
+            / NULLIF(wm.WorkMinutes, 0),     
+        0)     
+    AS INT)	 AS BASE6_FACT_PER_MINUTE,
+
+    CAST( -- факт - план / план
+        ROUND(
+            (CAST( 
+                ROUND(
+                    rnVypuskProd._Fld20674 * 1.0 
+                    / NULLIF(wm.WorkMinutes, 0)
+                , 0
+                )     
+            AS INT) 
+            - NULLIF(rsVremiaIzhotovlenia._Fld24502, 0))
+            / NULLIF(rsVremiaIzhotovlenia._Fld24502, 0)
+            * 100
+        , 2) 
+    AS DECIMAL(10,2)) AS VIDHYLENNIA,
 
     -- BASE7_COUNT_RIZIV
     rsColichRezov.RezCount AS BASE7_COUNT_RIZIV,
