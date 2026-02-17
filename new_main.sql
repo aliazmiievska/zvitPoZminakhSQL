@@ -68,7 +68,7 @@ SELECT
         MINUTE,
         CASE 
             WHEN ISNULL(rsRemonty.RepairMinutes, 0) > 100000 
-                 OR ISNULL(rsRemonty.RepairMinutes, 0) < 0
+                    OR ISNULL(rsRemonty.RepairMinutes, 0) < 0
             THEN 0
             ELSE ISNULL(rsRemonty.RepairMinutes, 0)
         END,
@@ -87,7 +87,7 @@ SELECT
         MINUTE,
         CASE 
             WHEN ISNULL(rsProstoi.DowntimeMinutes, 0) > 100000 
-                 OR ISNULL(rsProstoi.DowntimeMinutes, 0) < 0
+                    OR ISNULL(rsProstoi.DowntimeMinutes, 0) < 0
             THEN 0
             ELSE ISNULL(rsProstoi.DowntimeMinutes, 0)
         END,
@@ -143,7 +143,7 @@ LEFT JOIN (
     WHERE rn = 1
 ) rsVremiaIzhotovlenia
     ON rnVypuskProd._Fld20665RRef = rsVremiaIzhotovlenia._Fld24500RRef
-   AND rnVypuskProd._Fld20667RRef = rsVremiaIzhotovlenia._Fld25310RRef
+    AND rnVypuskProd._Fld20667RRef = rsVremiaIzhotovlenia._Fld25310RRef
 
 -- BASE7_COUNT_RIZIV
 LEFT JOIN (
