@@ -1,15 +1,11 @@
-SELECT
+SELECT TOP 20
 
-    -- BAZA (nonduplicatable)
-    DATEADD(YEAR, -2000, docOtchetyPoProd._Date_Time) AS BASE1_DATE,
-    docOtchetyPoProd._IDRRef BAZA,
-    docOtchetyPoProd._Number DocNUMBER,
-	docOtchetyPoProd._Posted Posted
+    docOtchetyPoProd._Marked
     
 
     
 FROM _Document426 docOtchetyPoProd
 
+WHERE docOtchetyPoProd._Marked = 1
 
-
-ORDER BY docOtchetyPoProd._Date_Time
+ORDER BY docOtchetyPoProd._Date_Time DESC

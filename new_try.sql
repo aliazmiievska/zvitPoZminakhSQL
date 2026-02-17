@@ -46,25 +46,30 @@ SELECT
     -- BASE9_WORKING_TIME
     docOtchetyPoProd._Fld23192 AS NachaloSmeny,
     docOtchetyPoProd._Fld23193 AS KonecSmeny,
-    wm.WorkMinutes,
+    wm.WorkMinutes AS WorkingMinutes,
+    CAST(wm.WorkMinutes / 60.0 AS decimal(10,2)) AS WorkingHours,
     CAST(wm.WorkMinutes / 60 AS VARCHAR(10)) + 'h ' 
     + RIGHT(CAST(wm.WorkMinutes % 60 AS VARCHAR(2)), 2) + 'min' AS BASE9_WORKING_TIME,
 
     -- BASE10_REMONT_TIME (other reg)
+    rsRemonty.RepairMinutes AS RemontMinutes,
+    CAST(ISNULL(rsRemonty.RepairMinutes, 0) / 60.0 AS decimal(10,2)) AS RemontHours,
     CAST(ISNULL(rsRemonty.RepairMinutes, 0) / 60 AS VARCHAR(10)) + 'h ' 
     + RIGHT(
     '0' + CAST(ISNULL(rsRemonty.RepairMinutes, 0) % 60 AS VARCHAR(2)),
     2) + 'min'   AS BASE10_REMONT_TIME,
 
     -- BASE11_PROSTOI_TIME (other reg)
-    CAST(ISNULL(rsProstoi.DowntimeMinutes, 0) / 60 AS VARCHAR(10)) + 'h ' 
+    rsProstoi.DowntimeMinutes AS ProstoiMinutes, 
+    CAST(ISNULL(rsProstoi.DowntimeMinutes, 0) / 60.0 AS decimal(10,2)) AS ProstoiHours, 
+    CAST(ISNULL(rsProstoi.DowntimeMinutes, 0) / 60.0 AS VARCHAR(10)) + 'h ' 
     + RIGHT(
     '0' + CAST(ISNULL(rsProstoi.DowntimeMinutes, 0) % 60 AS VARCHAR(2)),
     2
     ) + 'min'   AS BASE11_PROSTOI_TIME,
 
     -- BASE12_EXECUTANTS_COUNT (other reg)
-    ISNULL(sotr_count.executantsCount, 0)
+    ISNULL(sotr_count.executantsCount, 0) AS BASE12_EXECUTANTS_COUNT
 
 FROM _Document426 docOtchetyPoProd
 
@@ -189,5 +194,6 @@ LEFT JOIN (
 WHERE enumVidySmen._EnumOrder IS NOT NULL -- через це мін рік - 2023
 AND sprVidyPodrazdel._Description LIKE N'Цех%' -- бо Цех Лінія.. нема цеху - нема лінії
 AND docOtchetyPoProd._Posted  = 1
+AND docOtchetyPoProd._Marked = 0
 
 ORDER BY docOtchetyPoProd._Date_Time DESC
